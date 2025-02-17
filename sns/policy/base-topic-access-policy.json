@@ -1,0 +1,41 @@
+{
+    "Id": "TopicAccessPolicy",
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "TopicOwnerAccess",
+            "Action": [
+                "sns:Subscribe",
+                "sns:SetTopicAttributes",
+                "sns:RemovePermission",
+                "sns:Publish",
+                "sns:ListSubscriptionsByTopic",
+                "sns:GetTopicAttributes",
+                "sns:DeleteTopic",
+                "sns:AddPermission"
+            ],
+            "Effect": "Allow",
+            "Resource": "${topic_arn}",
+            "Principal": {
+                "AWS": "*"
+            },
+            "Condition": {
+                "StringEquals": {
+                    "aws:SourceAccount": "${account_id}"
+                }
+            }
+        },
+        {
+            "Sid": "AllowPublishThroughSSLOnly",
+            "Action": "sns:Publish",
+            "Effect": "Deny",
+            "Resource": "${topic_arn}",
+            "Principal": "*",
+            "Condition": {
+                "Bool": {
+                    "aws:SecureTransport": false
+                }
+            }
+        }
+    ]
+}

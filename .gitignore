@@ -1,0 +1,10 @@
+**/.terraform/**
+*.tfstate
+*.tfstate.backup
+extra-learning/
+__pycache__/
+*.pyc
+*.pyo
+secrets
+## Should not be ignored, but ignoring for now
+.terraform.lock.hcl
