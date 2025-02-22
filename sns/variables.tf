@@ -23,7 +23,7 @@ variable "display_name" {
 }
 
 variable "kms_master_key_id" {
-  description = "The ID of an AWS-managed customer master key (CMK) for Amazon SNS or a custom CMK"
+  description = "The ARN of an AWS-managed or customer master key (CMK) for Amazon SNS"
   type        = string
   default     = null
 
@@ -41,9 +41,9 @@ variable "kms_master_key_id" {
 variable "access_policy_statements" {
   description = "A list of policy statements defining the permissions for the SNS topic"
   type = list(object({
-    sid       = string
-    effect    = string
-    actions   = list(string)
+    sid     = string
+    effect  = string
+    actions = list(string)
     principals = list(object({
       type        = string
       identifiers = list(string)
@@ -58,14 +58,20 @@ variable "access_policy_statements" {
   default = []
 }
 
-variable "tags" {
-  description = "A map of tags to add to all resources"
+variable "required_tags" {
   type        = map(string)
+  description = "A mapping of tags to assign to the resource"
+  default     = {}
+}
+
+variable "additional_tags" {
+  type        = map(string)
+  description = "A mapping of tags to assign to the resource"
   default     = {}
 
   // tags should not start with 'aws:' or 'bank:'
   validation {
-    condition     = alltrue([for key, value in var.tags : !can(regex("^aws:.*|^bank:.*", key))])
+    condition     = alltrue([for key, value in var.additional_tags : !can(regex("^aws:.*|^bank:.*", key))])
     error_message = "Tags starting with 'aws:' or 'bank:' are reserved for internal use"
   }
 }

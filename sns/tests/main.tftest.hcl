@@ -33,13 +33,16 @@ variables {
       endpoint = "arn:aws:sqs:us-west-2:123456789012:test-queue"
     }
   ]
-  tags = {
-    "environment" = "dev"
+  required_tags = {
+    "mufg:environment" = "dev"
+  }
+  additional_tags = {
+    "purpose" = "testing"
   }
 }
 
 # Positive test case
-run "topic_name_check" {
+run "verify_topic_name" {
   command = plan
   assert {
     condition     = aws_sns_topic.this.name == "test-topic"
@@ -51,7 +54,7 @@ run "topic_name_check" {
   }
 }
 
-run "topic_kms_enabled_check" {
+run "verify_topic_kms" {
   command = plan
   assert {
     condition     = aws_sns_topic.this.kms_master_key_id == "alias/aws/sns"
@@ -60,15 +63,19 @@ run "topic_kms_enabled_check" {
 }
 
 
-run "topic_tag_check" {
+run "verify_topic_tags" {
   command = plan
   assert {
-    condition     = aws_sns_topic.this.tags["environment"] == "dev"
-    error_message = "Tag environment is not set to dev"
+    condition     = aws_sns_topic.this.tags["mufg:environment"] == var.required_tags["mufg:environment"]
+    error_message = "Required Tag 'mufg:environment' is not set correctly"
+  }
+  assert {
+    condition     = aws_sns_topic.this.tags["purpose"] == var.additional_tags["purpose"]
+    error_message = "Additional Tag 'purpose' is not set correctly"
   }
 }
 
-run "topic_empty_subscription_check" {
+run "verify_topic_empty_subscriptions" {
   command = plan
   variables {
     subscriptions = []
@@ -80,7 +87,7 @@ run "topic_empty_subscription_check" {
 }
 
 
-run "subscription_check" {
+run "verify_topic_subscriptions" {
   command = plan
   assert {
     condition     = aws_sns_topic_subscription.this["arn:aws:sqs:us-west-2:123456789012:test-queue"].protocol == "sqs"
@@ -95,7 +102,7 @@ run "subscription_check" {
 
 
 # Negative test case
-run "topic_name_null_check" {
+run "verify_topic_name_invalid" {
   command = plan
   variables {
     name         = null
@@ -107,7 +114,7 @@ run "topic_name_null_check" {
   ]
 }
 
-run "topic_kms_null_check" {
+run "verify_topic_kms_invalid" {
   command = plan
   variables {
     kms_master_key_id = null
@@ -117,20 +124,20 @@ run "topic_kms_null_check" {
   ]
 }
 
-run "topic_tag_reserved_prefix_check" {
+run "verify_topic_tag_reserved_prefix" {
   command = plan
   variables {
-    tags = {
+    additional_tags = {
       "aws:tag" = "test"
     }
   }
   expect_failures = [
-    var.tags
+    var.additional_tags
   ]
 }
 
 
-run "topic_subscription_check" {
+run "verify_topic_subscription_invalid_protocol" {
   command = plan
   variables {
     subscriptions = [

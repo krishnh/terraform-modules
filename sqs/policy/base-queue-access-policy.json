@@ -1,0 +1,34 @@
+{
+    "Id": "QueueAccessPolicy",
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "QueueOwnerAccountAccess",
+            "Action": [
+                "sqs:*"
+            ],
+            "Effect": "Allow",
+            "Resource": "${queue_arn}",
+            "Principal": {
+                "AWS": "*"
+            },
+            "Condition": {
+                "StringEquals": {
+                    "aws:SourceAccount": "${account_id}"
+                }
+            }
+        },
+        {
+            "Sid": "AllowSQSAccessThroughSSLOnly",
+            "Action": "sqs:*",
+            "Effect": "Deny",
+            "Resource": "${queue_arn}",
+            "Principal": "*",
+            "Condition": {
+                "Bool": {
+                    "aws:SecureTransport": false
+                }
+            }
+        }
+    ]
+}
