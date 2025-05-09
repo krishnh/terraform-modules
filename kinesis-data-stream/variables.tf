@@ -27,7 +27,7 @@ variable "retention_period" {
 variable "capacity_mode" {
   description = "(Optional) The capacity mode of the stream. Can be either 'PROVISIONED' or 'ON_DEMAND'."
   type        = string
-  default     = "ON_DEMAND"
+  default     = "PROVISIONED"
 
   validation {
     condition     = can(index(["PROVISIONED", "ON_DEMAND"], var.capacity_mode))
@@ -63,6 +63,11 @@ variable "kms_key_id" {
   default     = "alias/aws/kinesis"
 }
 
+variable "kinesis_data_stream_resource_policy" {
+  description = "The JSON resource policy to attach to the stream to manage cross-account access to data streams."
+  type        = string
+  default     = null
+}
 
 variable "required_tags" {
   type        = map(string)

@@ -6,7 +6,6 @@ variables {
   name                = "test-stream"
   shard_count         = 1
   retention_period    = 24
-  capacity_mode       = "ON_DEMAND"
   encryption_type     = "KMS"
   shard_level_metrics = ["IncomingBytes", "OutgoingBytes"]
   kms_key_id          = "alias/aws/kinesis"
@@ -40,7 +39,7 @@ run "verify_kinesis_stream_properties" {
   }
 
   assert {
-    condition     = aws_kinesis_stream.this.shard_level_metrics == var.shard_level_metrics
+    condition     = aws_kinesis_stream.this.shard_level_metrics == toset(var.shard_level_metrics)
     error_message = "shard_level_metrics is not passed correctly"
   }
 
@@ -68,16 +67,42 @@ run "verify_kinesis_stream_tags" {
   }
 }
 
+run "verify_on_demand_capacity_mode" {
+  command = plan
+  variables {
+    capacity_mode = "ON_DEMAND"
+    shard_count   = null
+  }
+  assert {
+    condition     = aws_kinesis_stream.this.stream_mode_details[0].stream_mode == "ON_DEMAND"
+    error_message = "capacity_mode is not set to ON_DEMAND"
+  }
+}
+
+run "verify_unencrypted_kinesis_stream" {
+    command = plan 
+    variables {
+      encryption_type = "NONE"
+      kms_key_id      = null
+    }
+
+    assert {
+      condition     = aws_kinesis_stream.this.encryption_type == "NONE"
+      error_message = "encryption_type is not set to NONE"
+    }
+    assert {
+      condition     = aws_kinesis_stream.this.kms_key_id == null
+      error_message = "kms_key_id is not set to null"
+    }
+}
+
 
 run "fail_for_invalid_capacity_mode" {
   command = plan
   variables {
     capacity_mode = "INVALID"
   }
-  assert {
-    condition     = contains(aws_kinesis_stream.this.capacity_mode, "INVALID")
-    error_message = "capacity_mode is not passed correctly"
-  }
+  expect_failures = [ var.capacity_mode ]
 }
 
 run "fail_for_invalid_shard_level_metrics" {
@@ -85,10 +110,7 @@ run "fail_for_invalid_shard_level_metrics" {
   variables {
     shard_level_metrics = ["INVALID"]
   }
-  assert {
-    condition     = contains(aws_kinesis_stream.this.shard_level_metrics, "INVALID")
-    error_message = "shard_level_metrics is not passed correctly"
-  }
+  expect_failures = [ var.shard_level_metrics ]
 }
 
 
