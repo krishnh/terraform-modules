@@ -37,5 +37,9 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_stream"></a> [stream](#output\_stream) | The Kinesis stream |
+| <a name="output_stream_arn"></a> [stream\_arn](#output\_stream\_arn) | The ARN of the Kinesis stream |
+| <a name="output_stream_id"></a> [stream\_id](#output\_stream\_id) | The ID of the Kinesis stream |
 <!-- END_TF_DOCS -->
