@@ -69,6 +69,13 @@ variable "kinesis_data_stream_resource_policy" {
   default     = null
 }
 
+variable "tags" {
+  type        = map(string)
+  description = "A mapping of tags to assign to the resource"
+  default     = {}
+}
+
+
 variable "required_tags" {
   type        = map(string)
   description = "A mapping of tags to assign to the resource"

@@ -36,6 +36,7 @@ No modules.
 | <a name="input_retention_period"></a> [retention\_period](#input\_retention\_period) | (Optional) Length of time data records are accessible after they are added to the stream. The maximum value of a stream's retention period is 8760 hours. Minimum value is 24. | `number` | `24` | no |
 | <a name="input_shard_count"></a> [shard\_count](#input\_shard\_count) | (Optional) The number of shards that the stream will use | `number` | `1` | no |
 | <a name="input_shard_level_metrics"></a> [shard\_level\_metrics](#input\_shard\_level\_metrics) | (Optional) The shard level metrics to enable on the stream. | `list(string)` | `[]` | no |
+| <a name="input_tags"></a> [tags](#input\_tags) | A mapping of tags to assign to the resource | `map(string)` | `{}` | no |
 
 ## Outputs
 

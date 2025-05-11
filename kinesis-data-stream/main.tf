@@ -14,5 +14,5 @@ resource "aws_kinesis_stream" "this" {
 
   kms_key_id = var.kms_key_id
 
-  tags = merge(var.required_tags, var.additional_tags)
+  tags = merge(var.tags, var.required_tags, var.additional_tags)
 }
