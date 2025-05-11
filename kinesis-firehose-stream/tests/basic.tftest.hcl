@@ -1,11 +1,11 @@
 provider "aws" {
-  region = "ap-south-1"
+  region = "us-west-2"
 }
 
 variables {
   name = "test-firehose"
   role_arn = "arn:aws:iam::123456789012:role/firehose_role"
-  kinesis_data_stream_arn = "arn:aws:kinesis:ap-south-1:123456789012:stream/test-stream"
+  kinesis_data_stream_arn = "arn:aws:kinesis:us-west-2:123456789012:stream/test-stream"
   destination = "extended_s3"
   s3_destination_configuration = {
     bucket_arn = "arn:aws:s3:::test-bucket"
@@ -13,7 +13,7 @@ variables {
     buffering_size = 5
     compression_format = "GZIP"
     prefix = "test/"
-    kms_key_arn = "arn:aws:kms:ap-south-1:123456789012:key/test-key"
+    kms_key_arn = "arn:aws:kms:us-west-2:123456789012:key/test-key"
     error_output_prefix = "error/"
     s3_backup_mode = "Enabled"
   }
@@ -24,7 +24,7 @@ variables {
     compression_format = "GZIP"
     prefix = "backup/"
     error_output_prefix = "error/"
-    kms_key_arn = "arn:aws:kms:ap-south-1:123456789012:key/test-key"
+    kms_key_arn = "arn:aws:kms:us-west-2:123456789012:key/test-key"
   }
   cloudwatch_logging_options = {
     enabled = true
@@ -40,7 +40,7 @@ variables {
         parameters = [
           {
             parameter_name  = "LambdaArn"
-            parameter_value = "arn:aws:lambda:ap-south-1:123456789012:function:test-function"
+            parameter_value = "arn:aws:lambda:us-west-2:123456789012:function:test-function"
           }
         ]
       }
